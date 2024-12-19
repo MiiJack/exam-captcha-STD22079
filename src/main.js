@@ -57,12 +57,17 @@ async function makeRequest() {
             headers: headers
         });
 
-        if (response.status === 403 || response.status === 405) {
-            const wafAction = response.headers.get('x-amzn-waf-action');
-            if (wafAction === 'captcha') {
-                showCaptcha();
-                return false;
-            }
+        // if (response.status === 403 || response.status === 405) {
+        //     const wafAction = response.headers.get('x-amzn-waf-action');
+        //     if (wafAction === 'captcha') {
+        //         showCaptcha();
+        //         return false;
+        //     }
+        // }
+
+        if (response.status === 405) {
+            showCaptcha();
+            return false;
         }
 
         return true;
