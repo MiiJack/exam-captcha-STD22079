@@ -20,7 +20,7 @@ export const ForbiddenSequence: React.FC = () => {
 
     useEffect(() => {
         let isMounted = true;
-        let timeoutId: NodeJS.Timeout;
+        let timeoutId: ReturnType<typeof setTimeout>;
 
         const continueSequence = async () => {
             if (currentNumber >= targetNumber || isWaitingForCaptcha || !isMounted) {
