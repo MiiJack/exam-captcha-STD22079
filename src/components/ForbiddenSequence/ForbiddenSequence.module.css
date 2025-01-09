@@ -1,0 +1,78 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.form {
+    margin-bottom: 1rem;
+}
+
+.formContent {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.input {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 0.5rem;
+    width: 200px;
+}
+
+.button {
+    background-color: #3b82f6;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    width: 200px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #2563eb;
+}
+
+.error {
+    color: #dc2626;
+    margin-bottom: 1rem;
+}
+
+.gridContainer {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+}
+
+.sequenceCard {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 1rem;
+    background-color: white;
+}
+
+.sequenceContent {
+    font-family: monospace;
+    white-space: pre-line;
+    height: 400px;
+    overflow-y: auto;
+    background-color: #f9fafb;
+    padding: 1rem;
+}
+
+.captchaCard {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 1rem;
+    background-color: white;
+    position: sticky;
+    top: 2rem;
+}
+
+.progress {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
