@@ -11,6 +11,7 @@ export const ForbiddenSequence: React.FC = () => {
     const [sequence, setSequence] = useState<string[]>([]);
     const [showForm, setShowForm] = useState(true);
     const sequenceRef = useRef<HTMLDivElement>(null);
+    const captchaVerifiedRef = useRef(false);
 
     useEffect(() => {
         if (sequenceRef.current) {
@@ -24,6 +25,10 @@ export const ForbiddenSequence: React.FC = () => {
 
         const continueSequence = async () => {
             if (currentNumber >= targetNumber || isWaitingForCaptcha || !isMounted) {
+                return;
+            }
+
+            if (isWaitingForCaptcha && !captchaVerifiedRef.current) {
                 return;
             }
 
@@ -43,12 +48,13 @@ export const ForbiddenSequence: React.FC = () => {
             } catch (error: any) {
                 console.error('Sequence error:', error);
 
-                if (error.is405 && isMounted) {
+                if (error.is405 && isMounted && !captchaVerifiedRef.current) {
                     setIsWaitingForCaptcha(true);
                     showCaptcha();
                 } else if (error.status === 400 && isMounted) {
                     setError('Captcha verification failed. Please try again.');
                     setIsWaitingForCaptcha(true);
+                    captchaVerifiedRef.current = false;
                     refreshCaptcha();
                 } else if (isMounted) {
                     setError(`${error.message || 'Error making API request'} (Status: ${error.status || 'unknown'})`);
@@ -57,7 +63,7 @@ export const ForbiddenSequence: React.FC = () => {
             }
         };
 
-        if (targetNumber > 0 && !isWaitingForCaptcha) {
+        if (targetNumber > 0) {
             continueSequence();
         }
 
@@ -69,11 +75,13 @@ export const ForbiddenSequence: React.FC = () => {
         };
     }, [currentNumber, targetNumber, isWaitingForCaptcha, currentToken]);
 
+
     const handleCaptchaSuccess = async (token: string) => {
         console.log('Captcha token received, length:', token.length);
         try {
             setCurrentToken(token);
             setIsWaitingForCaptcha(false);
+            captchaVerifiedRef.current = true;
 
             // Clear the captcha container after successful verification
             const captchaContainer = document.getElementById('captcha-container');
@@ -83,6 +91,7 @@ export const ForbiddenSequence: React.FC = () => {
         } catch (error) {
             console.error('Error handling captcha success:', error);
             setError('Failed to verify captcha. Please try again.');
+            captchaVerifiedRef.current = false;
             refreshCaptcha();
         }
     };
@@ -91,10 +100,15 @@ export const ForbiddenSequence: React.FC = () => {
         console.error('Captcha error:', error);
         setError('Captcha validation failed. Please try again.');
         setIsWaitingForCaptcha(true);
+        captchaVerifiedRef.current = false;
         refreshCaptcha();
     };
 
     const showCaptcha = () => {
+        if (captchaVerifiedRef.current) {
+            return;
+        }
+
         const captchaContainer = document.getElementById('captcha-container');
         if (!captchaContainer) {
             console.error('Captcha container not found');
@@ -127,6 +141,7 @@ export const ForbiddenSequence: React.FC = () => {
         if (captchaContainer) {
             captchaContainer.innerHTML = '';
         }
+        captchaVerifiedRef.current = false;
         showCaptcha();
     };
 
@@ -147,6 +162,7 @@ export const ForbiddenSequence: React.FC = () => {
         setTargetNumber(number);
         setIsWaitingForCaptcha(false);
         setCurrentToken(null);
+        captchaVerifiedRef.current = false;
     };
 
     return (
